@@ -1,16 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-
-from rest_framework.decorators import api_view
+from rest_framework import status, viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-
 from .models import Menu, Booking
 from .serializers import MenuSerializer, BookingSerializer
-from rest_framework import viewsets
-from .models import Booking
-from .serializers import BookingSerializer
-
 
 def home(request):
     return HttpResponse("Welcome to Restaurant")
@@ -19,12 +14,20 @@ def home(request):
 def index(request):
     return render(request, 'index.html', {})
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def msg(request):
+    return Response({"message": "This view is protected"})
+
+
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
+    permission_classes = [IsAuthenticated]
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def menu(request):
 
     if request.method == 'GET':
@@ -43,6 +46,7 @@ def menu(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def single_menu_item(request, pk):
 
     try:
@@ -67,8 +71,8 @@ def single_menu_item(request, pk):
         item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def bookings(request):
 
     if request.method == 'GET':
@@ -87,6 +91,7 @@ def bookings(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def booking(request, pk):
 
     try:

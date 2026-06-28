@@ -8,4 +8,5 @@ urlpatterns = [
     path('menu/<int:pk>/', views.single_menu_item, name='single-menu-item'),
     path('bookings/', views.bookings, name='bookings'),
     path('bookings/<int:pk>/', views.booking, name='booking'),
+    path('message/', views.msg),
 ]
